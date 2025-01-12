@@ -8,7 +8,7 @@ import (
 )
 
 
-func InitRoutes() *chi.Mux {
+func New() *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Route("/auth", func(r chi.Router) {
