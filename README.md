@@ -65,16 +65,7 @@ http_server:
   timeout: 4s
   idle_timeout: 60s
 ```
-6. Создайте в директории **todo-app** файл **.env**:
-```conf
-DB_PASSWORD=qwerty # пароль от базы данных
-CONFIG_PATH=cmd/todo-app/config/local.yaml # путь к конфигу, если не перемещали, оставьте так
-```
-7. Запустите проект, если создали **.env**:
-```bash
-go run cmd/todo-app/main.go
-```
-   Или так, если не создавали **.env**:
+6. Запустите проект:
 ```bash
 DB_PASSWORD=qwerty CONFIG_PATH=cmd/todo-app/config/local.yaml go run cmd/todo-app/main.go
 ```
