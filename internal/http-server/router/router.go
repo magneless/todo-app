@@ -1,19 +1,30 @@
 package router
 
 import (
+	"log/slog"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/magneless/todo-app/internal/http-server/handlers/auth"
 	"github.com/magneless/todo-app/internal/http-server/handlers/item"
 	"github.com/magneless/todo-app/internal/http-server/handlers/list"
+	"github.com/magneless/todo-app/internal/models"
 )
 
+type Auth interface {
+	CreateUser(name, username, hash_password string) (int64, error)
+	GetUser(username, hash_password string) (*models.User, error)
+}
 
-func New() *chi.Mux {
+type Repository interface {
+	Auth
+}
+
+func New(log *slog.Logger, repo Repository) *chi.Mux {
 	router := chi.NewRouter()
 
 	router.Route("/auth", func(r chi.Router) {
-		r.Post("/sign-up", auth.SignUp())
-		r.Post("/sign-in", auth.SignIn())
+		r.Post("/sign-up", auth.SignUp(log, repo))
+		r.Post("/sign-in", auth.SignIn(log, repo))
 	})
 
 	router.Route("/api", func(r chi.Router) {
