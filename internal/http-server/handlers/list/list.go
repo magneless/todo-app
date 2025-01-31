@@ -9,25 +9,25 @@ func CreateList() http.HandlerFunc {
 }
 
 func GetAllLists() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func GetListById() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func UpdateList() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func DeleteList() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
-		
+	return func(w http.ResponseWriter, r *http.Request) {
+
 	}
 }

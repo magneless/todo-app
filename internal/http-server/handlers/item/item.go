@@ -9,25 +9,25 @@ func CreateItem() http.HandlerFunc {
 }
 
 func GetAllItems() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func GetItemById() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func UpdateItem() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 	}
 }
 
 func DeleteItem() http.HandlerFunc {
-	return func (w http.ResponseWriter, r *http.Request) {
-		
+	return func(w http.ResponseWriter, r *http.Request) {
+
 	}
 }
