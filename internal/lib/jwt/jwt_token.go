@@ -54,3 +54,27 @@ func GenerateRefreshToken(username string) (string, time.Time, error) {
 	expiresAt := claims.ExpiresAt.Time
 	return tokenString, expiresAt, nil
 }
+
+func ValidateAccessToken(tokenString string) (string, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return "", fmt.Errorf("wrong signing method: %v", token.Header["alg"])
+		}
+
+		return []byte(secretKey), nil
+	})
+	if err != nil {
+		return "", fmt.Errorf("failed to parse token: %w", err)
+	}
+
+	claims, ok := token.Claims.(*Claims)
+	if !ok || !token.Valid {
+		return "", fmt.Errorf("invalid token")
+	}
+
+	if claims.ExpiresAt.Time.Before(time.Now()) {
+		return "", fmt.Errorf("token expired")
+	}
+
+	return claims.Username, nil
+}
