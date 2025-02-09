@@ -41,7 +41,7 @@ func SignUp(log *slog.Logger, userCreater UserCreater) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.auth.signup"
 
-		log = log.With(
+		log := log.With(
 			slog.String("op", op),
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
@@ -115,7 +115,7 @@ func SignIn(log *slog.Logger, userInitializer UserInitializer) http.HandlerFunc 
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.auth.signin"
 
-		log = log.With(
+		log := log.With(
 			slog.String("op", op),
 			slog.String("request_id", middleware.GetReqID(r.Context())),
 		)
