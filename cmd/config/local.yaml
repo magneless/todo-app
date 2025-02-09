@@ -3,7 +3,6 @@ storage:
   host: localhost
   port: 5436
   username: postgres
-  password: qwerty
   dbname: postgres
   sslmode: disable
 http_server:
