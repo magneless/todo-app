@@ -34,7 +34,7 @@ func GenerateAccessToken(username string) (string, error) {
 	return tokenString, nil
 }
 
-func GenerateRefreshToken(username string) (string, error) {
+func GenerateRefreshToken(username string) (string, time.Time, error) {
 	claims := &Claims{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -48,8 +48,9 @@ func GenerateRefreshToken(username string) (string, error) {
 
 	tokenString, err := token.SignedString([]byte(secretKey))
 	if err != nil {
-		return "", fmt.Errorf("failed to sign refresh token: %w", err)
+		return "", time.Time{}, fmt.Errorf("failed to sign refresh token: %w", err)
 	}
 
-	return tokenString, nil
+	expiresAt := claims.ExpiresAt.Time
+	return tokenString, expiresAt, nil
 }

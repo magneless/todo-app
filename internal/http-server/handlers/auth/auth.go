@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"time"
 
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/render"
@@ -31,8 +32,9 @@ type UserCreater interface {
 	CreateUser(name, username, hash_password string) (int64, error)
 }
 
-type UserGetter interface {
+type UserInitializer interface {
 	GetUser(username, hash_password string) (*models.User, error)
+	AddRefreshToken(refresh_token string, expires_at time.Time, username string) error
 }
 
 func SignUp(log *slog.Logger, userCreater UserCreater) http.HandlerFunc {
@@ -109,7 +111,7 @@ func SignUp(log *slog.Logger, userCreater UserCreater) http.HandlerFunc {
 	}
 }
 
-func SignIn(log *slog.Logger, userGetter UserGetter) http.HandlerFunc {
+func SignIn(log *slog.Logger, userInitializer UserInitializer) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		const op = "handlers.auth.signin"
 
@@ -160,7 +162,7 @@ func SignIn(log *slog.Logger, userGetter UserGetter) http.HandlerFunc {
 			return
 		}
 
-		user, err := userGetter.GetUser(req.Username, passwordHash)
+		user, err := userInitializer.GetUser(req.Username, passwordHash)
 		if err != nil {
 			log.Error("failed to sign in user", sl.Err(err))
 
@@ -178,9 +180,17 @@ func SignIn(log *slog.Logger, userGetter UserGetter) http.HandlerFunc {
 			return
 		}
 
-		refreshToken, err := jwt_token.GenerateRefreshToken(user.Username)
+		refreshToken, expiresAt, err := jwt_token.GenerateRefreshToken(user.Username)
 		if err != nil {
 			log.Error("failed to generate refresh token", sl.Err(err))
+
+			render.JSON(w, r, resp.InternalError())
+
+			return
+		}
+
+		if err = userInitializer.AddRefreshToken(refreshToken, expiresAt, req.Username); err != nil {
+			log.Error("failed to add refresh token", sl.Err(err))
 
 			render.JSON(w, r, resp.InternalError())
 

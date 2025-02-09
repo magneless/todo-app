@@ -2,6 +2,7 @@ package router
 
 import (
 	"log/slog"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/magneless/todo-app/internal/http-server/handlers/auth"
@@ -13,6 +14,7 @@ import (
 type Auth interface {
 	CreateUser(name, username, hash_password string) (int64, error)
 	GetUser(username, hash_password string) (*models.User, error)
+	AddRefreshToken(refresh_token string, expires_at time.Time, username string) error
 }
 
 type Repository interface {

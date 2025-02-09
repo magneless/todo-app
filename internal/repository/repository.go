@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"time"
 
 	"github.com/lib/pq"
 	"github.com/magneless/todo-app/internal/models"
@@ -66,4 +67,26 @@ func (r *Repository) GetUser(username, password_hash string) (*models.User, erro
 	}
 
 	return user, nil
+}
+
+func (r *Repository) AddRefreshToken(refresh_token string, expires_at time.Time, username string) error {
+	const op = "repository.AddRefreshToken"
+
+	stmt, err := r.db.Prepare(`
+	UPDATE users
+	SET refresh_token = $1, expires_at = $2
+	WHERE username = $3
+	`)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.Exec(refresh_token, expires_at, username)
+	if err != nil {
+		return fmt.Errorf("%s: %w", op, err)
+	}
+
+	return nil
 }
